@@ -1,0 +1,16 @@
+https://www.kaggle.com/datasets/arsalanrehman/pakistan-used-car-prices-2023
+https://www.kaggle.com/datasets/zusmani/pakistan-car-reviews
+https://www.kaggle.com/datasets/karimali/used-cars-data-pakistan
+
+
+
+CAR reviews:
+	india - https://www.kaggle.com/datasets/tr1gg3rtrash/cars-2022-dataset
+	us - https://www.kaggle.com/datasets/shreemunpranav/edmunds-car-review
+	https://www.kaggle.com/datasets/ankkur13/edmundsconsumer-car-ratings-and-reviews
+	
+CAR sales:
+	russian - https://www.kaggle.com/datasets/ekibee/car-sales-information
+	us - https://www.kaggle.com/datasets/austinreese/craigslist-carstrucks-data
+	tenesse - https://www.kaggle.com/datasets/sheacon/tn-mvr-2018-2022
+	uk - https://www.kaggle.com/datasets/guanhaopeng/uk-used-car-market
