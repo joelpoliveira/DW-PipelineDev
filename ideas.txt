@@ -2,7 +2,14 @@ https://www.kaggle.com/datasets/arsalanrehman/pakistan-used-car-prices-2023
 https://www.kaggle.com/datasets/zusmani/pakistan-car-reviews
 https://www.kaggle.com/datasets/karimali/used-cars-data-pakistan
 
+DATASETS we are using (us):
+	gasoline prices - https://www.kaggle.com/code/mruanova/us-gasoline-and-diesel-retail-prices-prediction/notebook
+	used cars - https://www.kaggle.com/datasets/austinreese/craigslist-carstrucks-data
+	tenesse - https://www.kaggle.com/datasets/sheacon/tn-mvr-2018-2022
+	reviews - https://www.kaggle.com/datasets/shreemunpranav/edmunds-car-review
 
+CAR gasoline prices:
+	us - https://www.kaggle.com/code/mruanova/us-gasoline-and-diesel-retail-prices-prediction/notebook
 
 CAR reviews:
 	india - https://www.kaggle.com/datasets/tr1gg3rtrash/cars-2022-dataset
