@@ -2,7 +2,7 @@
 
 # eletricos:
 #       e - something
-#
+### chevy bolt --
 # gas:
 #       TFSI
 #
@@ -13,4 +13,6 @@
 # hybrid:
 #       e - somthing
 #       hybrid
+#       plugin
 #
+

@@ -11,6 +11,9 @@ class CarModelParser:
         self.models:dict={}
         self.model:str=None
 
+    def is_nan(self, value):
+        return value!=value
+
     def parse_model(self, model:str):
         if self.models==None:
             return None
@@ -23,7 +26,7 @@ class CarModelParser:
             if m in model:
                 if type(sub_models[m]) is dict:
                     parse_result = self._parse_sub_model(model, sub_models[m])
-                    if np.isnan(parse_result):
+                    if self.is_nan(parse_result):
                         continue
                     else:
                         return parse_result
@@ -60,6 +63,7 @@ def get_parse_from_model_str(model:str) -> CarModelParser:
         "amc":AMC,
         "american-lafrance":AmericanLaFrance,
         "amphicar":Amphicar,
+        "aprilia":Aprilia,
         "ariel":Ariel,
         "arnolt":Arnolt,
         "aston-martin":AstonMartin,
@@ -74,6 +78,7 @@ def get_parse_from_model_str(model:str) -> CarModelParser:
         "bugatti":Bugatti,
         "buick":Buick,
         "cadillac":Cadillac,
+        "cagiva":Cagiva,
         "checker":Checker,
         "chevrolet":Chevrolet,
         "chrysler":Chrysler,
@@ -91,6 +96,7 @@ def get_parse_from_model_str(model:str) -> CarModelParser:
         "dkw":DKW,
         "dodge":Dodge,
         "dort":Dort,
+        "ducati":Ducati,
         "dutton":Dutton,
         "edsel":Edsel,
         "excalibur":Excalibur,
@@ -101,6 +107,7 @@ def get_parse_from_model_str(model:str) -> CarModelParser:
         "fiberfab":Fiberfab,
         "fisker":Fisker,
         "ford":Ford,
+        "four-wheel-drive":FourWheelDrive,
         "franklin":Franklin,
         "frazer":Frazer,
         "freightliner":Freightliner,
@@ -210,12 +217,15 @@ class Acura(CarModelParser):
         super().__init__()
         self.models = {
             "ilx":"ilx",
+            "3 2":"cl",
+            "3ts":"tl",
             "md-x":"mdx",
             "mdx":"mdx",
             "nsx":"nsx",
             "ns-x":"nsx",
             "rdx":"rdx",
             "rd-x":"rdx",
+            "cl":"cl",
             "rl":"rl",
             "rlx":"rlx",
             "rl-x":"rlx",
@@ -224,8 +234,8 @@ class Acura(CarModelParser):
             "tlx":"tlx",
             "tl-x":"tlx",
             "tl":"tl",
-            "tls":"tls",
-            "tl-s":"tls",
+            "tys":"tl",
+            "32":"tl",
             "sl-x":"slx",
             "slx":"slx",
             "ts-x":"tsx",
@@ -233,7 +243,22 @@ class Acura(CarModelParser):
             "type-s":"type-s",
             "type s":"type-s",
             "zdx":"zdx",
-            "zd-x":"zdx"
+            "zd-x":"zdx",
+            "19u":"cl",
+            "awt":"tl",
+            "txt":"tlx",
+            "22c":"cl",
+            "23c":"cl",
+            "32":"cl",
+            "3.0":"cl",
+            "int":"integra",
+            "sed":"integra",
+            "i2p":"ilx",
+            "ies":"ilx",
+            "nsx":"nsx",
+            "jh4":"integra",
+            "leg":"cl",
+            "acu":"rdx",
         }
 
 
@@ -302,8 +327,31 @@ class AMGeneral(CarModelParser):
             "dj":"jeep-dj",
             "925":"m925",
             "809":"m809",
+            "1c6":"humvee",
+            "1sp":"humvee",
+            "15":"humvee",
         }
 
+
+class Aprilia(CarModelParser):
+    def __init__(self):
+        super().__init__()
+        self.models = {
+            "zd4":"rsv",
+            "rsv":"rsv",
+            "rst":"rst",
+            "rs":"rs",
+            "dor":"dorsoduro",
+            "sr":"sr",
+            "sxv":"sxv",
+            "sx":"sx",
+            "sca":"scarabeo",
+            "tua":"tuarreg",
+            "tuo":"tuono",
+            "mojit":"mojito",
+        }
+
+            
 
 class AMC(CarModelParser):
     """
@@ -402,6 +450,7 @@ class AstonMartin(CarModelParser):
             "vantage":"vantage",
             "lagonda":"lagonda",
             "vanquish":"vanquish",
+            "van":"vantage"
         }
 
 
@@ -607,15 +656,25 @@ class BMW(CarModelParser):
             "318":"318",
             "320":"320",
             "323":"323",
+            "32i":"325",
+            "5ci":"325",
+            "wba":"325",
+            "3ca":"325",
             "325":"325",
+            "28x":"328",
+            "28i":"328",
             "328":"328",
+            "30c":"330",
+            "30i":"330",
             "330":"330",
             "335":"335",
             "428":"428",
             "430":"430",
             "435":"435",
+            "a52":"525",
             "525":"525",
             "528":"528",
+            "5ia":"530",
             "530":"530",
             "535":"535",
             "540":"540",
@@ -623,12 +682,17 @@ class BMW(CarModelParser):
             "633":"633",
             "635":"635",
             "640":"640",
+            "64c":"645",
             "645":"645",
             "650":"650",
             "735":"735",
+            "74i":"740",
+            "7il":"740",
             "740":"740",
             "745":"745",
+            "75i":"750",
             "750":"750",
+            "84c":"840",
             "840":"840",
             "850":"850",
             "m1":"m1",
@@ -704,6 +768,15 @@ class BMW(CarModelParser):
             "4-z":"z4",
             "z-4":"z4",
             "z 4":"z4",
+            "f65":"f650",
+            "r12":"r1200",
+            "wb1":"k1200",
+            "r11":"r1100",
+            "k12":"k1200",
+            "f80":"f800",
+            "k16":"k1600",
+            "s10":"s1000",
+            "g31":"g310",
         }
 
 
@@ -757,12 +830,17 @@ class Buick(CarModelParser):
             "cutlass":"cutlass",
             "centurion":"centurion",
             "century":"century",
+            "2g4":"century",
+            "1g4":"century",
             "lucerne":"lucerne",
             "lucern":"lucerne",
             "electra":"electra",
+            "ele":"electra",
             "emcore":"encore",
             "encore":"encore",
+            "ecr":"encore",
             "enclave":"enclave",
+            "enc":"enclave",
             "envision":"envision",
             "estate":"estate",
             "grand national":"grand national",
@@ -779,6 +857,7 @@ class Buick(CarModelParser):
             "ranier":"rainier",
             "reatta":"reatta",
             "regal":"regal",
+            "reg":"regal",
             "rendezvous":"rendezvous",
             "rendevous":"rendezvous",
             "renzendeous":"rendezvous",
@@ -848,6 +927,19 @@ class Cadillac(CarModelParser):
         }
 
 
+class Cagiva(CarModelParser):
+    def __init__(self):
+        super().__init__()
+        self.models = {
+            "w16":"w16",
+            "w12":"w12",
+            "w8":"w8",
+            "f4":"f4",
+            "te4":"t4",
+            "riv":"river"
+        }
+
+
 class Checker(CarModelParser):
     def __init__(self):
         super().__init__()
@@ -863,6 +955,22 @@ class Chevrolet(CarModelParser):
     def __init__(self):
         super().__init__()
         self.models = {
+            "blt":"bolt",
+            "bl2":"blazer",
+            "bss":"cobalt",
+            "cap":"caprice",
+            "mcl":"malibu",
+            "1g1":"bolt",
+            "car":"camaro",
+            "cvr":"cavalier",
+            "col":"colorado",
+            "1gn":"blazer",
+            "cut":"corvetter",
+            "s10":"blazer",
+            "bla":"blazer",
+            "v10":"blazer",
+            "llt":"impala",
+            "iss":"impala",
             "express":"express",
             "cargo":"express",
             "expree":"express",
@@ -1202,6 +1310,8 @@ class Chrysler(CarModelParser):
             "300m":"300m",
             "300-m":"300m",
             "300":"300",
+            "2c3":"300",
+            "c30":"300",
             "aspen":"aspen",
             "aspin":"aspen",
             "cirrus":"cirrus",
@@ -1243,6 +1353,7 @@ class Chrysler(CarModelParser):
             "valiant charger":"valiant charger",
             "valiant":"valiant",
             "voyager":"voyager",
+            "voy":"voyager",
             "windsor":"windsor"
         }
 
@@ -1430,12 +1541,21 @@ class Dodge(CarModelParser):
             "a100":"a100",
             "advenger":"avenger",
             "avenger":"avenger",
+            "1b3":"avenger",
             "aspen":"aspen",
             "b-3-b":"b3b",
             "b-3b":"b3b",
             "caravan":"caravan",
             "grand can":"caravan",
             "grand carvan":"caravan",
+            "car":"caravan",
+            "cvn":"caravan",
+            "grc":"caravan",
+            "1b4":"caravan",
+            "gsp":"caravan",
+            "gca":"caravan",
+            "gcv":"caravan",
+            "gsx":"caravan",
             "cargo":"cargo",
             "charger daytona":"charger daytona",
             "chager daytona":"charger daytona",
@@ -1474,6 +1594,7 @@ class Dodge(CarModelParser):
             "dart":"dart",
             "dc8":"dc8",
             "demon":"challenger",
+            "che":"challenger",
             "desoto":"desoto",
             "diplomat":"diplomat",
             "intrepid":"intrepid",
@@ -1497,6 +1618,7 @@ class Dodge(CarModelParser):
             "monaco":"monaco",
             "shadow":"shadow",
             "stealth":"stealth",
+            "ste":"stealth",
             "stratus":"stratus",
             "super bee":"superbee",
             "superbee":"superbee",
@@ -1522,6 +1644,34 @@ class Dort(CarModelParser):
             "10":"model-10"
         }
 
+
+class Ducati(CarModelParser):
+    def __init__(self):
+        super().__init__()
+        self.models = {
+            "monster":"monster",
+            "multistrada":"multistrada",
+            "panigale":"panigale",
+            "sportclassic":"sportclassic",
+            "dia":"diavel",
+            "750":"750sport",
+            "dst":"diavel",
+            "900":"900cr",
+            "s2r":"monster",
+            "mon":"monster",
+            "m75":"m750",
+            "848":"superbike",
+            "mul":"multistrada",
+            "st":"sport-touring",
+            "sup":"superbike",
+            "959":"superbike",
+            "996":"superbike",
+            "m62":"m620",
+            "mns":"monster",
+            "scr":"scrambler",
+            "mts":"multistrada",
+
+        }
 
 class Dutton(CarModelParser):
     def __init__(self):
@@ -1784,6 +1934,18 @@ class Ford(CarModelParser):
                 "c max":"c-max",
 
             },
+            "f5":"f150",
+            "f45":"f450",
+            "eco":"e150",
+            "ltd":"crown victoria",
+            "1fa":"contour",
+            "fla":"f100",
+            "cha":"f350",
+            "sup":"e350",
+            "mh":"e350",
+            "f55":"f550",
+            "f/5":"f550",
+            "drw":"f450",
             "contour":"countour",
             "country":"country squire",
             "crestline":"crestline",
@@ -1917,6 +2079,15 @@ class Ford(CarModelParser):
             "f-6":"f6",
             "f 6":"f6",
             "f6":"f6",
+        }
+
+
+
+class FourWheelDrive(CarModelParser):
+    def __init__(self):
+        super().__init__()
+        self.models = {
+            "1fa":"explorer"
         }
 
 
