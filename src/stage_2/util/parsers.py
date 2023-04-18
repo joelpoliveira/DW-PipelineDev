@@ -1,6 +1,6 @@
 
 
-EMPTY_VALUE = "Unknown"
+
 
 def mileage_to_miles_band(mile):
     if mile < 26000:
