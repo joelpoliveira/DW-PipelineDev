@@ -8,6 +8,7 @@ The following files (pos-processing) should be put in *source* folder:
  - *used_car_sales.csv*
  - *fuel_prices.csv*
  - *vehicles.csv*
+ - *review.csv*
 
 
 # ETL Processing
@@ -26,4 +27,9 @@ python etl_sales.py {path_to_source_file} {source_indicator}
  * $3$, refers to *vehicles.csv*
 
 ## Tutorial on etl_reviews
+For this second Fact table, since there is only one source the command to run is:
+```bash
+python etl_reviews.py {path_to_source_file}
+```
+
 
