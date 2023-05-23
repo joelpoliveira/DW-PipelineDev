@@ -4,154 +4,7 @@ import csv
 import json
 import pandas as pd
 from tqdm import tqdm
-from abc import abstractclassmethod
-
-TABLES_DIR = "./tables/"
-LOOKUP_DIR = "./lookup/"
-
-def mileage_to_miles_band(mileage):
-    """
-    Function that converts the mileage to a mileage band 
-    """
-    if mileage=="Unknown": return mileage
-
-    mileage=int(mileage.split(".")[0])
-    if mileage < 26000: return "[0, 26000)"
-    if mileage < 60500: return "[26000, 60500)"
-    if mileage < 98500: return "[60500, 98500)"
-    if mileage < 143400: return "[98500, 143400)"
-    if mileage < 209000: return "[143400, 209000)"
-    return "[209000, ?)"
-
-
-class SourceColumnsFilter:
-    """
-    This class receives the column names of the source file. 
-    A list is generated with the respective indexes of the columns in that file.
-    The incoming column names guarantee the order of the indexes in the list, which is:
-        - model_year
-        - mileage
-        - make
-        - model
-        - fuel
-        - cylinders
-        - engine
-        - transmission
-        - purchase_date
-        - latitude
-        - longitude
-        - state
-    If a column is not present in the source file, the value in the list must be None.
-    """
-    def __init__(self, col_names):
-        self.col_names = col_names
-        self.file_name = None
-
-    def set_filename(self, file_name):
-        """
-        Sets the file name of the source file and creates the list of indexes.
-        """
-        self.file_name = file_name
-        self.create_column_positions()
-
-    def create_column_positions(self):
-        """
-        Creates the list of indexes.
-        """
-        self.columns = []
-        with open(self.file_name, "r") as f:
-            header = f.readline().strip().split(",")
-
-            for col_name in self.col_names:
-                if col_name == None:
-                    self.columns.append(None)
-                else:
-                    for j, header_col in enumerate(header):
-                        if col_name == header_col:
-                            self.columns.append(j)
-                            break
-        assert len(self.col_names)==len(self.columns), "Columns names do not match source header!"
-    
-    def get_columns(self):
-        return self.columns
-
-
-
-class LookupTable:
-    """
-    
-    """
-    def __init__(self, dim_name):
-        self.dim_name = dim_name
-        self.file_name = LOOKUP_DIR + f"lut_{self.dim_name}.json"
-        self.load()
-
-    def load(self):
-        if os.path.isfile(self.file_name):
-            with open(self.file_name, "r", encoding="utf-8") as f:
-                self.lookup_table = json.load(f)
-                try:
-                    self.next_surrogate_key = max(self.lookup_table.values()) + 1
-                except ValueError:
-                    self.next_surrogate_key = 1
-        else:
-            self.lookup_table = {}
-            self.next_surrogate_key = 1
-
-    def get_surrogate_key(self, natural_key):
-        #natural key migth be a large tuple or just a string
-        if natural_key in self.lookup_table:
-            self.surrogate_key_already_existed = True
-            return self.lookup_table[natural_key]
-        else:
-            self.lookup_table[natural_key] = self.next_surrogate_key
-            self.next_surrogate_key += 1
-            self.surrogate_key_already_existed = False
-            return self.lookup_table[natural_key]
-        
-    def save(self):
-        with open(self.file_name, "w", encoding="utf-8") as f:
-            json.dump(self.lookup_table, f, sort_keys=True)
-
-
-
-class AbstractDimension:
-    def __init__(self, dim_name, source_filter):
-        self.dim_name = dim_name
-        self.source_filter = source_filter
-        self.file_name = TABLES_DIR + f"dim_{self.dim_name}.csv"
-        self.file = None
-        self.lookup_table = LookupTable(self.dim_name)
-        self._header=None
-
-    def begin_process(self):
-        if self._header!=None:
-            save_header_row_in_dimension_file = False
-
-            if not os.path.isfile(self.file_name):
-                save_header_row_in_dimension_file = True
-            
-            self.file = open(self.file_name, "a", encoding="utf-8")
-
-            if save_header_row_in_dimension_file:
-                self.file.write(",".join(self._header)+"\n")
-        
-
-    def end_process(self):
-        if self._header!=None:
-            self.file.close()
-            self.lookup_table.save()
-    
-    @abstractclassmethod
-    def process_row(self, row):
-        pass
-        
-    def save_processed_row(self, processed_row):
-        if self._header!=None:
-            processed_row +="\n"
-            self.file.write(processed_row)
-            
-
+from util.etl_modeling import *
 
 class DateDimension(AbstractDimension):
     def __init__(self, source_filter):
@@ -204,22 +57,20 @@ class DateDimension(AbstractDimension):
             date_written_day_of_week = date_full_description.day_name().lower()
             date_season = self.get_season(date_full_description)
 
-            processed_row=",".join(list(map(str,
-                (   
-                    time_key,
-                    date_full_description,
-                    date_year,
-                    date_month,
-                    date_written_month,
-                    date_day,
-                    date_written_day_of_week,
-                    date_season,
-                    date_day_of_week,
-                    date_week_number_in_year,
-                    date_is_weekend,
-                    date_month_is_month_end
-                )
-            )))
+            processed_row=(   
+                time_key,
+                date_full_description,
+                date_year,
+                date_month,
+                date_written_month,
+                date_day,
+                date_written_day_of_week,
+                date_season,
+                date_day_of_week,
+                date_week_number_in_year,
+                date_is_weekend,
+                date_month_is_month_end
+            )
 
             self.save_processed_row(processed_row)
 
@@ -245,14 +96,12 @@ class LocationDimension(AbstractDimension):
 
         loc_key = self.lookup_table.get_surrogate_key(str((state, lat, long)))
         if not self.lookup_table.surrogate_key_already_existed:
-            processed_row=",".join(list(map(str,
-                (
-                    loc_key,
-                    state,
-                    lat,
-                    long
-                )
-            )))
+            processed_row=(
+                loc_key,
+                state,
+                lat,
+                long
+            )
             self.save_processed_row(processed_row)
 
 
@@ -299,36 +148,30 @@ class VehicleDimension(AbstractDimension):
             (year, mileage, make, model, fuel, cylinders, engine, transmission)
         ))
         if not self.lookup_table.surrogate_key_already_existed:
-            processed_row=",".join(list(map(str,
-                (
-                    vehicle_key,
-                    year,
-                    mileage,
-                    make,
-                    model,
-                    fuel,
-                    cylinders,
-                    engine,
-                    transmission
-                )
-            )))
+            processed_row=(
+                vehicle_key,
+                year,
+                mileage,
+                make,
+                model,
+                fuel,
+                cylinders,
+                engine,
+                transmission
+            )
             self.save_processed_row(processed_row)
 
 
-class CarSalesFacts:
+class CarSalesFacts(AbstractFactTable):
     def __init__(self,
                  source_filter,
-                 date_lookup_table,
-                 location_lookup_table,
-                 vehicle_lookup_table):
-        self.fact_name = "car_sales"
-        self.file_name = TABLES_DIR + f"fact_{self.fact_name}.csv"
-        self.file = None#open(self.file_name, "a", encoding="utf-8")
-        
-        self.source_filter = source_filter
-        self.date_lookup_table = date_lookup_table
-        self.location_lookup_table = location_lookup_table
-        self.vehicle_lookup_table = vehicle_lookup_table
+                 **kwargs):
+
+        super().__init__("car_sales", source_filter)
+
+        self.date_lookup_table = kwargs["date_lut"]
+        self.location_lookup_table = kwargs["location_lut"]
+        self.vehicle_lookup_table = kwargs["vehicle_lut"]
 
         self._header = ("date_key",
                        "location_key",
@@ -356,24 +199,6 @@ class CarSalesFacts:
         except KeyError:
             return "0"
         
-    def begin_process(self):
-        save_header_row_in_file = False
-
-        if not os.path.isfile(self.file_name):
-            save_header_row_in_file = True
-        
-        self.file = open(self.file_name, "a", encoding="utf-8")
-
-        if save_header_row_in_file:
-            self.file.write(",".join(self._header)+"\n")
-
-    def end_process(self):
-        """
-        Closes the facts file.
-        """
-        if self.file is not None:
-            self.file.close()
-            self.file = None
 
     def process_row(self, row):
         year_index = self.source_filter.get_columns()[0]
@@ -414,24 +239,15 @@ class CarSalesFacts:
             str((state, lat, long))
         )
 
-        processed_row = ",".join(list(map(str,
-            (
-                date_natural_key,
-                location_natural_key,
-                vehicle_natural_key,
-                price,
-                self.get_fuel_price_at_date(fuel, date)
-            )
-        )))
+        processed_row =(
+            date_natural_key,
+            location_natural_key,
+            vehicle_natural_key,
+            price,
+            self.get_fuel_price_at_date(fuel, date)
+        )
         self.save_processed_row(processed_row)
 
-    def save_processed_row(self, processed_row):
-        """
-        Saves the processed row to the dimension file.
-        """
-        if self.file is not None:
-            processed_row +="\n"
-            self.file.write(processed_row)
 
 def get_source_filter(idx):
     # Source 1 - tn_mvr.csv
@@ -502,9 +318,9 @@ if __name__=="__main__":
     vehicleDim = VehicleDimension(source_filter)
     salesFacts = CarSalesFacts(
         source_filter,
-        dateDim.lookup_table,
-        locationDim.lookup_table,
-        vehicleDim.lookup_table    
+        date_lut=dateDim.lookup_table,
+        location_lut=locationDim.lookup_table,
+        vehicle_lut=vehicleDim.lookup_table    
     )
     
     print("Beginning ETL process...")
