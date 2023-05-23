@@ -21,9 +21,9 @@ python etl_sales.py {path_to_source_file} {source_indicator}
 ```
 
 {source_indicator} values: 
- 1. *tn_mvr.csv*
- 2. *used_car_sales.csv*
- 3. *vehicles.csv*
+ * $1$, refers to *tn_mvr.csv*
+ * $2$, refers to *used_car_sales.csv*
+ * $3$, refers to *vehicles.csv*
 
 ## Tutorial on etl_reviews
 
