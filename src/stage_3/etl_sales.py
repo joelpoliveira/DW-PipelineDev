@@ -1,4 +1,3 @@
-import os
 import sys
 import csv
 import json
@@ -9,11 +8,11 @@ from util.etl_modeling import *
 class DateDimension(AbstractDimension):
     def __init__(self, source_filter):
         super().__init__("date", source_filter)
-        self._header = ("date_key","date_full_description", "date_year",
-                        "date_month", "date_written_month", "date_day",
-                        "date_written_day_of_week", "date_season", 
-                        "date_day_of_week", "date_week_number_in_year", 
-                        "day_is_weekend", "day_is_month_end")
+        self._header = ("date_key","date_full_description", "year",
+                        "month", "written_month", "day",
+                        "written_day_of_week", "season", 
+                        "day_of_week", "week_number_in_year", 
+                        "is_weekend", "is_month_end")
         self.filter_date_index = 8
 
     def get_season(self, date):
@@ -78,8 +77,8 @@ class DateDimension(AbstractDimension):
 class LocationDimension(AbstractDimension):
     def __init__(self, source_filter):
         super().__init__("location", source_filter)
-        self._header = ("location_key", "location_state", 
-                        "location_latitude", "location_longitude")
+        self._header = ("location_key", "state", 
+                        "latitude", "longitude")
 
         self.filter_lat_index = 9
         self.filter_long_index = 10
@@ -108,11 +107,11 @@ class LocationDimension(AbstractDimension):
 class VehicleDimension(AbstractDimension):
     def __init__(self, source_filter):
         super().__init__("vehicle", source_filter)
-        self._header = ("vehicle_key", "vehicle_year",
-                        "vehicle_number_of_cylinders", 
-                        "vehicle_mileage", "vehicle_make", 
-                        "vehicle_model", "vehicle_engine",
-                        "vehicle_fuel_type", "vehicle_transmission_type")
+        self._header = ("vehicle_key", "year",
+                        "mileage", "make", 
+                        "model", "fuel",
+                        "cylinders", 
+                        "engine", "transmission")
         
         self.filter_year_index = 0
         self.filter_mileage_index = 1
@@ -142,6 +141,8 @@ class VehicleDimension(AbstractDimension):
         fuel = row[fuel_index] if fuel_index!=None else "Unknown"
         cylinders = row[cylinders_index] if cylinders_index!=None else "Unknown"
         engine = row[engine_index] if engine_index!=None else "Unknown"
+        if len(engine)==0:
+            engine = "Unknown"
         transmission = row[transmission_index] if transmission_index!=None else "Unknown"
 
         vehicle_key = self.lookup_table.get_surrogate_key(str(
@@ -224,6 +225,8 @@ class CarSalesFacts(AbstractFactTable):
         fuel = row[fuel_index] if fuel_index!=None else "Unknown"
         cylinders = row[cylinders_index] if cylinders_index!=None else "Unknown"
         engine = row[engine_index] if engine_index!=None else "Unknown"
+        if len(engine)==0:
+            engine = "Unknown"
         transmission = row[transmission_index] if transmission_index!=None else "Unknown"
         date = str(pd.Timestamp(row[date_index][:10]))
         lat = row[lat_index] 

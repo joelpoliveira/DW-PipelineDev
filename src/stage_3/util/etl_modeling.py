@@ -22,7 +22,7 @@ def mileage_to_miles_band(mileage):
     return "[209000, ?)"
 
 def get_hash(string):
-        return int(md5(string.encode()).hexdigest(), 16)
+        return md5(string.encode()).hexdigest()
 
 class SourceColumnsFilter:
     """

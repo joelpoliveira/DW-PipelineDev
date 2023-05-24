@@ -1,21 +1,18 @@
-import os
 import sys
 import csv
-import json
 import pandas as pd
 from tqdm import tqdm
-from hashlib import md5
 from util.etl_modeling import *
 
 
 class DateDimension(AbstractDimension):
     def __init__(self, source_filter):
         super().__init__("date", source_filter)
-        self._header = ("date_key","date_full_description", "date_year",
-                        "date_month", "date_written_month", "date_day",
-                        "date_written_day_of_week", "date_season", 
-                        "date_day_of_week", "date_week_number_in_year", 
-                        "day_is_weekend", "day_is_month_end")
+        self._header = ("date_key","date_full_description", "year",
+                        "month", "written_month", "day",
+                        "written_day_of_week", "season", 
+                        "day_of_week", "week_number_in_year", 
+                        "is_weekend", "is_month_end")
         self.filter_date_index = 8
 
     def get_season(self, date):
@@ -80,11 +77,11 @@ class DateDimension(AbstractDimension):
 class VehicleDimension(AbstractDimension):
     def __init__(self, source_filter):
         super().__init__("vehicle", source_filter)
-        self._header = ("vehicle_key", "vehicle_year",
-                        "vehicle_number_of_cylinders", 
-                        "vehicle_mileage", "vehicle_make", 
-                        "vehicle_model", "vehicle_engine",
-                        "vehicle_fuel_type", "vehicle_transmission_type")
+        self._header = ("vehicle_key", "year",
+                        "mileage", "make", 
+                        "model", "fuel",
+                        "cylinders", 
+                        "engine", "transmission")
         
         self.filter_year_index = 0
         self.filter_mileage_index = 1
@@ -138,8 +135,8 @@ class VehicleDimension(AbstractDimension):
 class ReviewDimension(AbstractDimension):
     def __init__(self, source_filter):
         super().__init__("review", source_filter)
-        self._header = ("review_key", "review_username", 
-                        "review_title", "review_description")
+        self._header = ("review_key", "username", 
+                        "title", "review")
         self.filter_description_index = 10
         self.filter_title_index = 11
         self.filter_reviewer_index = 12
