@@ -13,10 +13,10 @@ CONNECTION =  pg.connect(
 )
 
 TABLE_NAMES = [
-#    "date_dimension", 
-#    "location_dimension",
-#    "vehicle_dimension", 
-    "review_dimension",
+    #"date_dimension", 
+    #"location_dimension",
+    #"vehicle_dimension", 
+    #"review_dimension",
     "car_sales_fact",
     "car_rating_fact"
 ]

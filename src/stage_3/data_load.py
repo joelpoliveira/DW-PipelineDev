@@ -125,15 +125,15 @@ CREATE TABLE car_sales_fact (
     date_key            NUMERIC(9, 0) NOT NULL,
     location_key        NUMERIC(9, 0) NOT NULL,
     vehicle_key         NUMERIC(9, 0) NOT NULL,
-    sale_price          NUMERIC(9, 2) NOT NULL,
-    fuel_price          NUMERIC(3, 2) NOT NULL,
+    sale_price          NUMERIC(15, 2) NOT NULL,
+    fuel_price          NUMERIC(5, 2) NOT NULL,
 --
     FOREIGN KEY (date_key) REFERENCES date_dimension (date_key),
     FOREIGN KEY (location_key) REFERENCES location_dimension (location_key),
     FOREIGN KEY (vehicle_key) REFERENCES vehicle_dimension (vehicle_key),
 --
-    CHECK (sale_price>0),
-    CHECK (fuel_price>0)
+    CHECK (sale_price>=0),
+    CHECK (fuel_price>=0)
 );
 """,
 
@@ -220,7 +220,7 @@ if __name__ == "__main__":
         #insert_data(dim_date, "date_dimension")
         #insert_data(dim_location, "location_dimension")
         #insert_data(dim_vehicle, "vehicle_dimension")
-        insert_data(dim_review, "review_dimension")
+        #insert_data(dim_review, "review_dimension")
 
         insert_data(fact_sales, "car_sales_fact")
         insert_data(fact_ratings, "car_rating_fact")
