@@ -5,12 +5,20 @@ import psycopg2 as pg
 
 os.environ["PGGSSENCMODE"] = "disable"
 
+# CONNECTION =  pg.connect(
+#     host="appserver-01.alunos.di.fc.ul.pt",
+#     database="ipai13", 
+#     user="ipai13", 
+#     password='ipai13'
+# )
+
 CONNECTION =  pg.connect(
-    host="appserver-01.alunos.di.fc.ul.pt",
-    database="ipai13", 
-    user="ipai13", 
-    password='ipai13'
+    host="localhost",
+    database="teste",
+    user="postgres",
+    password='postgres'
 )
+
 
 TABLE_CREATE_QUERIES = {
     "date_dimension": """
@@ -217,10 +225,10 @@ if __name__ == "__main__":
     try:
         create_tables()
         
-        #insert_data(dim_date, "date_dimension")
-        #insert_data(dim_location, "location_dimension")
-        #insert_data(dim_vehicle, "vehicle_dimension")
-        #insert_data(dim_review, "review_dimension")
+        insert_data(dim_date, "date_dimension")
+        insert_data(dim_location, "location_dimension")
+        insert_data(dim_vehicle, "vehicle_dimension")
+        insert_data(dim_review, "review_dimension")
 
         insert_data(fact_sales, "car_sales_fact")
         insert_data(fact_ratings, "car_rating_fact")
